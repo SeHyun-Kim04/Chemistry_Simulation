@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	
+	<!-- Bootstrap Set -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<!-- Title Set -->
+	<title>보일 법칙 시뮬레이터 - Simulator 01</title>
+	
+	<!-- Main Set -->
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/set_font.css">
+	<script src="js/molecule.js"></script>
+	<style>
+	.background_i-pad{
+		background-image: url('img/bg.jpg');
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+	</style>
+	
+	
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white" style="">
+    <a class="navbar-brand" href="/">
+        <img src="" height="50" style="border-radius: 7px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+	
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+			<li class="nav-item">
+                <a class="nav-link" href="/">Main</a>
+            </li>
+			<li class="nav-item">
+                <a class="nav-link active" href="Simulator_01.html">보일법칙</a>
+            </li>
+			<li class="nav-item ">
+                <a class="nav-link" href="https://makerksh.com/">만든이</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<body>
+	<div class="container justify-content-center">
+		<div id="title">
+			<h1 class="text-center"> 보일 법칙(초코파이 실험) 시뮬레이터 </h1>
+			<p class="text-center">Made By "Maker KSH"</p>
+		</div>
+		<div class="background_i-pad set_i-pad">
+			<div class="container">
+				
+				<div class="container">
+					<h3 class="text-center">상자</h3>
+					
+					<div class="setmargin" style="border: solid;">
+						<div class="setmargin_1 inner">
+							
+						</div>
+						<div class="setmargin_2 inner" id="ma">
+							<canvas id="molecule" width="250" height="20"></canvas>
+						</div>
+						<div class="setmargin_3 inner">
+							
+						</div>
+					</div>
+					
+				</div>
+				
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<h3 class="text-center">설정하기 </h3>
+							<form>
+								<label for="customRange1" class="form-label">내부 기압 설정</label>
+								<br>
+								<input type="range" class="form-range" value="5" min="0" max="5" step="0.5" oninput="change_size()" id="customRange1"/>
+								
+								<br>
+								
+								<label for="customRange2" class="form-label">기체 분자수 설정</label>
+								<br>
+								<input type="range" class="form-range" value="20" min="0" max="20" step="1" oninput="change_ball()" id="customRange2"/>
+								
+								<br>
+								
+								<label for="customRange3" class="form-label">기체 분자 x방향 속도</label>
+								<br>
+								<input type="range" class="form-range" value="5" min="1" max="5" step="0.2" oninput="change_x_speed()" id="customRange3"/>
+								
+								<br>
+								
+								<label for="customRange4" class="form-label">기체 분자 y방향 속도</label>
+								<br>
+								<input type="range" class="form-range" value="5" min="1" max="5" step="0.2" oninput="change_y_speed()" id="customRange4"/>
+								
+								<br>
+								
+								<label for="customRange5" class="form-label">분자 갱신 속도</label>
+								<br>
+								<input type="range" class="form-range" value="20" min="1" max="80" step="1" oninput="change_redraw_speed()" id="customRange5"/>
+							</form>
+						</div>
+						<div class="col">
+							<h3 class="text-center">내부 상태</h3>
+							<p class="text-center" id="container_Pa">내부 기압 : 0 MPa</p>
+							<p class="text-center" id="now_balls">기체 분자 개수 : 20 개</p>
+							<p class="text-center" id="now_speed">기체 분자 속도 : 1 px/ms<br>(x방향 : 5 px/ms, y방향 : 5 px/ms)</p>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="text-center d-grid gap-2">
+				<button type="button" class="btn btn-outline-danger btn-lg" onClick="window.location.reload()">초기화 하기</button>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script>
+var use_ball = 20;
+var now_redraw_speed = 20;
+function change_size(){
+	var range = document.getElementById("customRange1");
+	
+	var set_width = 250+30*(5-range.value);
+	var set_height = 20+10*(5-range.value);
+	$('.setmargin_2').css('width',String(set_width)+"px");
+	$('.setmargin_2').css('height',String(set_height)+"px");
+	canvas.width = set_width;
+	canvas.height = set_height;
+	
+	document.getElementById("container_Pa").innerHTML = "내부 기압 : " + (range.value-5) +" MPa"
+}
+
+function change_ball(){
+	use_ball = document.getElementById("customRange2").value;
+	
+	document.getElementById("now_balls").innerHTML = "기체 분자 개수 : " + use_ball +" 개"
+}
+
+function change_x_speed(){
+	dx = document.getElementById("customRange3").value;
+	
+	document.getElementById("now_speed").innerHTML = "기체 분자 속도 : " + dx/dy*now_redraw_speed +" px/ms<br>" + "(x방향 : " + dx*now_redraw_speed + " px/ms, y방향 : " + dy*now_redraw_speed + " px/ms)"
+}
+
+function change_y_speed(){
+	dy = document.getElementById("customRange4").value;
+	
+	document.getElementById("now_speed").innerHTML = "기체 분자 속도 : " + dx/dy*now_redraw_speed +" px/ms<br>" + "(x방향 : " + dx*now_redraw_speed + " px/ms, y방향 : " + dy*now_redraw_speed + " px/ms)"
+}
+
+function change_redraw_speed(){
+	now_redraw_speed = document.getElementById("customRange5").value;
+	
+	clearInterval(Running);
+	Running = setInterval(Run, now_redraw_speed);
+	
+	now_redraw_speed/=1000;
+	
+	document.getElementById("now_speed").innerHTML = "기체 분자 속도 : " + dx/dy*now_redraw_speed +" px/ms<br>" + "(x방향 : " + dx*now_redraw_speed + " px/ms, y방향 : " + dy*now_redraw_speed + " px/ms)"
+}
+</script>
+
+</html>
